@@ -6,10 +6,19 @@ library(shiny)
 library(shinythemes)
 library(shinyWidgets)
 ui <- fluidPage(theme = shinytheme("journal"),
-                tags$head(tags$style(HTML(".section-header { font-weight: bold; font-size: 20px; margin-top: 20px; margin-bottom: 10px; }"))),
+                tags$head(tags$style(
+                  HTML("
+         .section-header {
+           background-color: #4285F4;
+           color: white;
+           padding: 10px;
+           font-weight: bold;
+         }
+         ")
+                )),
                 titlePanel("Hinds Property Management"),
                 fluidRow(
-                  h1("Questionnaire for Rental Property"),
+                  tags$h1(HTML("<u>Questionnaire for Rental Property</u>")),
                   p("Thank you for your interest. Please fill out this form in
     order to set up a showing time. 
     If this form is not filled out, you will not be able to set up a showing of the apartment. 
@@ -17,7 +26,7 @@ ui <- fluidPage(theme = shinytheme("journal"),
                     span("THIS IS NOT AN APPLICATION", style = "font-weight:bold; color:red;")
                   )),
                   fluidRow(
-                    h1("Minimum Criteria"),
+                    tags$h1(HTML("<u>Minimum Criteria</u>")),
                     tags$ul(
                       tags$li("Applicant must have current photo identification and a valid social security number."),
                       tags$li("Applicant's monthly household income must exceed three times the rent (gross). 
@@ -29,7 +38,7 @@ ui <- fluidPage(theme = shinytheme("journal"),
                       tags$li("Applicant must be a non-smoker."),
                       tags$li("Occupancy is limited to 2 people per bedroom."),
                       tags$li("No Pets"))),
-                  h3("Please answer the following questions to the best of your ability."),
+                  tags$h3(HTML("<u>Please answer the following questions to the best of your ability.</u>")),
                   # Section 1
                   div(
                     class = "section-header",
@@ -106,7 +115,27 @@ ui <- fluidPage(theme = shinytheme("journal"),
                     ),
                     fluidRow(
                       column(4, "If you are approved, when will you have the first months rent and deposit available?"),
-                      column(8, textInput("move_in_date",NULL,value = "")))))
+                      column(8, textInput("move_in_date",NULL,value = "")))),
+                # Section 4
+                div(
+                  class = "section-header",
+                  "Contact Information"
+                ),
+                div(
+                  fluidRow(
+                    column(4, "Your name"),
+                    column(8, textInput("name", NULL,value = ""))
+                  ),
+                  fluidRow(
+                    column(4, "Your email"),
+                    column(8, textInput("email", NULL,value = ""))
+                  ),
+                  fluidRow(
+                    column(4, "Your phone number"),
+                    column(8, textInput("number", NULL,value = ""))
+                  )
+                ),
+                actionButton(inputId = "submit", label = "Submit", class = "btn-primary", width = "100%"))
 
 
 server <- function(input, output,session) {
