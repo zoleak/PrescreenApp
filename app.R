@@ -5,7 +5,12 @@
 library(shiny)
 library(shinythemes)
 library(shinyWidgets)
-ui <- fluidPage(theme = shinytheme("journal"),
+library(shinyjs)
+
+fieldsMandatory <- c("name", "favourite_pkg")
+
+
+ui <- fluidPage(theme = shinytheme("flatly"),
                 tags$head(tags$style(
                   HTML("
          .section-header {
@@ -14,19 +19,28 @@ ui <- fluidPage(theme = shinytheme("journal"),
            padding: 10px;
            font-weight: bold;
          }
+         
+         .centered {
+           text-align: center;
+         }
+         
+          ul {
+      text-align: center;
+      list-style-position: inside;
+    }
          ")
                 )),
                 titlePanel("Hinds Property Management"),
                 fluidRow(
-                  tags$h1(HTML("<u>Questionnaire for Rental Property</u>")),
-                  p("Thank you for your interest. Please fill out this form in
+                  tags$h1(class = "centered",HTML("<u>Questionnaire for Rental Property</u>")),
+                  p(class = "centered","Thank you for your interest. Please fill out this form in
     order to set up a showing time. 
     If this form is not filled out, you will not be able to set up a showing of the apartment. 
     If you have any questions, please don't hesitate to text me at 856-425-2091.", 
                     span("THIS IS NOT AN APPLICATION", style = "font-weight:bold; color:red;")
                   )),
                   fluidRow(
-                    tags$h1(HTML("<u>Minimum Criteria</u>")),
+                    tags$h1(class = "centered",HTML("<u>Minimum Criteria</u>")),
                     tags$ul(
                       tags$li("Applicant must have current photo identification and a valid social security number."),
                       tags$li("Applicant's monthly household income must exceed three times the rent (gross). 
@@ -38,7 +52,7 @@ ui <- fluidPage(theme = shinytheme("journal"),
                       tags$li("Applicant must be a non-smoker."),
                       tags$li("Occupancy is limited to 2 people per bedroom."),
                       tags$li("No Pets"))),
-                  tags$h3(HTML("<u>Please answer the following questions to the best of your ability.</u>")),
+                  tags$h3(class = "centered",HTML("<u>Please answer the following questions to the best of your ability.</u>")),
                   # Section 1
                   div(
                     class = "section-header",
@@ -58,8 +72,8 @@ ui <- fluidPage(theme = shinytheme("journal"),
                   ),
                   div(
                     fluidRow(
-                      column(4, "Do you have a steady source of income?"),
-                      column(8, radioButtons("income", NULL, c("Yes I do", "No I don't")))
+                      column(4,"Do you have a steady source of income?"),
+                      column(8,radioButtons("income", NULL, c("Yes I do", "No I don't")))
                     ),
                     fluidRow(
                       column(4, "Is your monthly gross income at least $4,800"),
@@ -124,15 +138,21 @@ ui <- fluidPage(theme = shinytheme("journal"),
                 div(
                   fluidRow(
                     column(4, "Your name"),
-                    column(8, textInput("name", NULL,value = ""))
+                    column(8, textInput("name", NULL,
+                                        placeholder = "Enter your name",
+                                        value = ""))
                   ),
                   fluidRow(
                     column(4, "Your email"),
-                    column(8, textInput("email", NULL,value = ""))
+                    column(8, textInput("email", NULL,
+                                        placeholder = "Enter your email",
+                                        value = ""))
                   ),
                   fluidRow(
                     column(4, "Your phone number"),
-                    column(8, textInput("number", NULL,value = ""))
+                    column(8, textInput("number", NULL,
+                                        placeholder = "Enter your phone number",
+                                        value = ""))
                   )
                 ),
                 actionButton(inputId = "submit", label = "Submit", class = "btn-primary", width = "100%"))
