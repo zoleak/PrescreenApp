@@ -25,24 +25,6 @@ labelMandatory <- function(label) {
 
 appCSS <- ".mandatory_star { color: red; }"
 ##################################################################################
-# create a function to write data to Google Sheets
-write_to_google_sheet <- function(data) {
-  
-  # replace this with your Google Sheet ID
-  sheet_id <- "responses"
-  
-  # use the sheets_auth() function to authenticate your R script with Google Sheets
-  sheets_auth()
-  
-  # write the data to the sheet
-  sheet_append(
-    ss = sheet_id, 
-    data = data, 
-    sheet = "Responses",
-    col_names = TRUE
-  )
-}
-##################################################################################
 ui <- fluidPage(theme = shinytheme("flatly"),
                 shinyjs::useShinyjs(),
                 shinyjs::inlineCSS(appCSS),
@@ -253,44 +235,68 @@ server <- function(input, output,session) {
     
     shinyjs::toggleState(id = "submit", condition = mandatoryFilled)
   })    
-  ##################################################################################
-  # create an event that triggers when the user submits the form
-  observeEvent(input$submit, {
-    
-    # create a named vector of the user's responses
-    user_responses <- c(
-      "honesty" = input$honesty,
-      "income" = input$income,
-      "income_amt" = input$income_amt,
-      "credit_score" = input$credit_score,
-      "great_ref" = input$great_ref,
-      "evicted" = input$evicted,
-      "background_check" = input$background_check,
-      "past_landlords" = input$past_landlords,
-      "name" = input$name,
-      "number" = input$number,
-      "email" = input$email,
-      "num_people" = input$num_people,
-      "pets" = input$pets,
-      "smoke" = input$smoke,
-      "move_in_date" = input$move_in_date
-    )
-    
-    # write the user's responses to the Google Sheet
-    write_to_google_sheet(user_responses)
-    
-    # show a message to the user that their responses have been saved
-    showModal(
+###################################################################################
+#  observeEvent(input$submit, {
+#    
+#    # Store the inputs
+#    input_petanswer <- input$pets
+#    input_smokeanswer <- input$smoke
+#    
+#    # Authenticate with Google Sheets
+#    # You need to have a valid Google account and credentials set up
+#    gs4_auth()
+#    
+#    # Specify the name of your sheet and worksheet
+#    # If the sheet does not exist, it will create it for you
+#    sheet_name <- "Sheet1"
+#    worksheet_name <- "responses_pre_sceen"
+#    
+#    # Open your Google Sheet and worksheet using the sheet name and worksheet name
+#    sheet <- gs4_find(sheet_name)
+#    worksheet <- sheet %>% gs4_sheet(worksheet_name)
+#    
+#    # Append the inputs to a new row in the worksheet
+#    gs4_create(sheet = sheet, ws = worksheet, input_petanswer, 
+#               input_smokeanswer, col_names = c("pets?", "smoker?"), col_types = c("text", "text"))
+#  })
+#
+####################################################################################  
+  # observeEvent is a reactive function that will run when the submit button is clicked
+observeEvent(input$submit, {
+    # Check if user meets all criteria
+    # if all the criteria are met, then the user will be shown a success message
+    if (input$honesty == "Yes I will" &&
+        input$income == "Yes I do" &&
+        input$income_amt == "Yes it is" &&
+        input$credit_score == "Above 600" &&
+        input$past_landlords == "Yes I am" &&
+        input$great_ref == "Yes I will" &&
+        input$evicted == "No I haven't" &&
+        input$background_check == "Yes I am" &&
+        input$smoke == "No" &&
+        input$pets == "No") {
+      # If user meets all criteria, show success message
+      showModal(
+        modalDialog(
+          title = "Application Submitted",
+          "Congratulations! You meet all our minimum criteria and are eligible for the rental property.",
+          easyClose = TRUE
+        )
+      )
+    # If the criteria are not met, then the user will be shown an error message
+    } else {
+      # If user does not meet all criteria, show error message
+      showModal(
       modalDialog(
-        title = "Form Submitted",
-        "Your responses have been saved. We will be in touch soon!",
-        easyClose = TRUE,
-        footer = NULL
+        "Unfortunately, we regret to inform you that at this time, 
+        you do not meet the rental criteria for this property. Thank you for
+        your time.",
+        size = "l",
+        icon = icon("exclamation-triangle")
       ))
-    
-    
+    }
   })
-  
+
   
 }
 ##################################################################################
