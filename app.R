@@ -8,6 +8,7 @@ library(shinythemes)
 library(shinyWidgets)
 library(shinyjs)
 library(googlesheets4)
+library(DateTimeRangePicker)
 ##################################################################################
 # Mandatory fields for inputs in application so users can't submit responses 
 # without answering all the questions
@@ -235,31 +236,7 @@ server <- function(input, output,session) {
     
     shinyjs::toggleState(id = "submit", condition = mandatoryFilled)
   })    
-###################################################################################
-#  observeEvent(input$submit, {
-#    
-#    # Store the inputs
-#    input_petanswer <- input$pets
-#    input_smokeanswer <- input$smoke
-#    
-#    # Authenticate with Google Sheets
-#    # You need to have a valid Google account and credentials set up
-#    gs4_auth()
-#    
-#    # Specify the name of your sheet and worksheet
-#    # If the sheet does not exist, it will create it for you
-#    sheet_name <- "Sheet1"
-#    worksheet_name <- "responses_pre_sceen"
-#    
-#    # Open your Google Sheet and worksheet using the sheet name and worksheet name
-#    sheet <- gs4_find(sheet_name)
-#    worksheet <- sheet %>% gs4_sheet(worksheet_name)
-#    
-#    # Append the inputs to a new row in the worksheet
-#    gs4_create(sheet = sheet, ws = worksheet, input_petanswer, 
-#               input_smokeanswer, col_names = c("pets?", "smoker?"), col_types = c("text", "text"))
-#  })
-#
+
 ####################################################################################  
   # observeEvent is a reactive function that will run when the submit button is clicked
 observeEvent(input$submit, {
@@ -275,40 +252,22 @@ observeEvent(input$submit, {
         input$background_check == "Yes I am" &&
         input$smoke == "No" &&
         input$pets == "No") {
-      # If user meets all criteria, show success message
+      # If the user meets all criteria, show the success message
       showModal(
         modalDialog(
-          "Congratulations! You meet all our minimum criteria and 
-          are eligible for the rental property.",
+          title = "Congratulations!",
+          "You meet all our minimum criteria and are eligible for the rental property.",
           size = "l",
-          calendarInput(
-            inputId = "showing_calendar",
-            label = "Select a date and time for showing:",
-            weekends = TRUE,
-            editable = TRUE,
-            view = "week",
-            events = list(
-              # block out certain dates/times (e.g. Sundays)
-              list(
-                title = "Not available",
-                start = "2022-05-01",
-                dow = c(0)
-              ),
-              # add event for user-selected showing time
-              list(
-                title = "Showing",
-                start = "2022-05-10T12:00:00",
-                end = "2022-05-10T13:00:00"
-              )
-            )
+          footer = tagList(
+            actionButton("schedule_showing", "Schedule Showing", class = "btn-primary")
           )
-        )
-      )
+        ))
     # If the criteria are not met, then the user will be shown an error message
     } else {
       # If user does not meet all criteria, show error message
       showModal(
       modalDialog(
+        title = "Criteria Not Met",
         "Unfortunately, we regret to inform you that at this time, 
         you do not meet the rental criteria for this property. Thank you for
         your time.",
@@ -317,150 +276,35 @@ observeEvent(input$submit, {
       ))
     }
   })
+  
 
+
+  # Handle the scheduling of showing when the "Schedule Showing" button is clicked
+  observeEvent(input$schedule_showing, {
+    showModal(
+      modalDialog(
+        title = "Schedule Showing",
+        size = "l",
+        DateTimeRangePickerInput(
+          inputId = "showing_date",
+          style = paste0(
+            "background-color: chartreuse; ",
+            "box-shadow: 0 30px 40px 0 rgba(16, 36, 94, 0.2);"
+          )
+        )
+      )
+    )
+  })
+  
+  
+
+  
+
+  
   
 }
 
 
-### THIS IS SO I DON'T LOOSE REST OF CODE
-
-#
-# Load necessary packages
-#library(shiny)
-#library(shinythemes)
-#library(shinyWidgets)
-#library(shinyjs)
-#library(blastula)
-#
-## Create HTML email template
-#email_body <- render_email_body({
-#  hero(
-#    title = "Your scheduled showing",
-#    subtitle = "Details",
-#    footer = "Thank you for choosing our rental property!"
-#  )
-#})
-#
-## define email settings
-#email_settings <- smtp_server(
-#  config = list(
-#    server = 'smtp.gmail.com',
-#    port = 465,
-#    username = '{your-email-address@gmail.com}',
-#    password = '{your-password}',
-#    ssl = TRUE
-#  )
-#)
-#
-## Define UI
-#ui <- fluidPage(
-#  theme = shinytheme("flatly"),
-#  shinyjs::useShinyjs(),
-#  # ...
-#  # existing UI elements
-#  # ...
-#  tags$head(tags$style(
-#    HTML("
-#         .mandatory_star { color: red; } 
-#         .fc-event { background-color: #4285F4; color: white; }
-#         ")
-#  )),
-#  titlePanel(div("Hinds Property Management",
-#                 style = 'background-color:#4285F4;
-#                           color:white;')),
-#  # ...
-#  # existing UI elements
-#  # ...
-#  fluidRow(tags$h1(
-#    class = "centered",
-#    HTML("<u>Questionnaire for Rental Property</u>")
-#  )),
-#  # ...
-#  # existing UI elements
-#  # ...
-#  actionButton(inputId = "submit",
-#               label = "Submit",
-#               class = "btn-primary",
-#               width = "100%")
-#)
-#
-## Define server
-#server <- function(input, output, session) {
-#  # ...
-#  # existing server code
-#  # ...
-#  
-#  # render interactable calendar in success modal for qualified users
-#  observeEvent(input$submit, {
-#    if (input$honesty == "Yes I will" &&
-#        input$income == "Yes I do" &&
-#        input$income_amt == "Yes it is" &&
-#        input$credit_score == "Above 600" &&
-#        input$past_landlords == "Yes I am" &&
-#        input$great_ref == "Yes I will" &&
-#        input$evicted == "No I haven't" &&
-#        input$background_check == "Yes I am" &&
-#        input$smoke == "No" &&
-#        input$pets == "No") {
-#      # render calendar
-#      showModal(
-#        modalDialog(
-#          title = "Application Submitted",
-#          "Congratulations! You meet all our minimum criteria and are eligible for the rental property.
-#          Please choose a date and time for a showing",
-#          easyClose = TRUE,
-#          calendarInput(
-#            inputId = "showing_calendar",
-#            label = "Select a date and time for showing:",
-#            weekends = TRUE,
-#            editable = TRUE,
-#            view = "week",
-#            events = list(
-#              # block out certain dates/times (e.g. Sundays)
-#              list(
-#                title = "Not available",
-#                start = "2022-05-01",
-#                dow = c(0)
-#              ),
-#              # add event for user-selected showing time
-#              list(
-#                title = "Showing",
-#                start = "2022-05-10T12:00:00",
-#                end = "2022-05-10T13:00:00"
-#              )
-#            )
-#          ),
-#          footer = modalButton(
-#            "Schedule",
-#            onclick = jsCode("
-#                            var event = $('#showing_calendar').fullCalendar('clientEvents')[0];
-#                            var startDate = event.start.format('dddd, MMMM Do YYYY, h:mm a'); 
-#                            $('#showing_calendar').fullCalendar('removeEvents');
-#                            // send email to user
-#                            send_email(
-#                              recipient = input$email,
-#                              body = '<p>Thank you for scheduling a showing! The details of your appointment are:</p>' + startDate,
-#                              subject = 'Rental property showing'
-#                            )
-#                            // send email to you
-#                            send_email(
-#                              recipient = '{your-email-address@gmail.com}',
-#                              body = '<p>A showing has been scheduled. The details of the appointment are:</p>' + startDate,
-#                              subject = 'Rental property showing'
-#                            )
-#                            Shiny.unbindAll(this); $(this).remove();")
-#          ),
-#          ignoreCancel = TRUE
-#        )
-#      )
-#      # ...
-#      # existing server code
-#      # ...
-#    }
-#  })
-#
-#
-##
 ###################################################################################
 shinyApp(ui, server)
 #
