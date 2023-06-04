@@ -10,6 +10,12 @@ library(shinyjs)
 library(googlesheets4)
 library(DateTimeRangePicker)
 ##################################################################################
+gs4_deauth()
+creds <- gs4_auth(path = "gmailrapp-387816-0cc858dd4db0.json")
+sheet_name <- "responses_pre_sceen"
+
+
+
 # Mandatory fields for inputs in application so users can't submit responses 
 # without answering all the questions
 fieldsMandatory <- c("honesty", "income","income_amt","credit_score","great_ref",
@@ -285,26 +291,61 @@ observeEvent(input$submit, {
       modalDialog(
         title = "Schedule Showing",
         size = "l",
-        DateTimeRangePickerInput(
+        footer = tagList(
+          actionButton("submit2", "Submit")
+        ),
+        airDatepickerInput(
           inputId = "showing_date",
-          style = paste0(
-            "background-color: chartreuse; ",
-            "box-shadow: 0 30px 40px 0 rgba(16, 36, 94, 0.2);"
-          )
+          label = "Please Choose a Showing Time:",
+          timepicker = TRUE,
+          dateFormat = "dd-MM-yyyy"
+          
+          ),
+        timepickerOptions(
+          dateTimeSeparator = ""
         )
+        )
+    )
+  })
+  
+  observeEvent(input$submit2, {
+    showModal(
+      modalDialog(
+        "Thank you. We will reach out to you shortly!",
+        footer = NULL
       )
     )
   })
   
-  
-
-  
-
-  
-  
+  observeEvent(input$submit, {
+    # Specify the name of the Google Sheet and range
+    sheet_name <- "responses_pre_screen"
+    range <- "A1"
+    
+    # Create a data frame with the data to be written
+    data <- data.frame(
+      Honesty = input$honesty,
+      Income = input$income,
+      IncomeAmount = input$income_amt,
+      CreditScore = input$credit_score,
+      GreatReferences = input$great_ref,
+      Evicted = input$evicted,
+      BackgroundCheck = input$background_check,
+      PastLandlords = input$past_landlords,
+      Name = input$name,
+      Number = input$number,
+      Email = input$email,
+      NumPeople = input$num_people,
+      Pets = input$pets,
+      Smoke = input$smoke,
+      MoveInDate = input$move_in_date
+    )
+    
+    # Write the data frame to the Google Sheet
+    sheet <- range_read(sheet_name, range = range)
+    sheet_write(sheet, data, range = range)
+  })
 }
-
-
 ###################################################################################
 shinyApp(ui, server)
 #
