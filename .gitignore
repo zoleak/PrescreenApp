@@ -1,1 +1,4 @@
 .secrets/
+.Rproj.user
+.secrets
+.Renviron

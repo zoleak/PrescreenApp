@@ -8,7 +8,10 @@ library(shinythemes)
 library(shinyWidgets)
 library(shinyjs)
 library(googlesheets4)
+library(emayili)
 ##################################################################################
+readRenviron(".Renviron")
+
 # Authorize the Google Sheets API
 gs4_auth(email = "kevin.zolea@gmail.com", cache = ".secrets")
 
@@ -346,8 +349,38 @@ observeEvent(input$submit, {
     # Save the data frame to the Google Sheet
     sheet_append(data, ss = google_sheet_id, sheet = "Sheet1")
   })
- 
+  
+  # Send email to myself
+  observeEvent(input$submit2, {
+    # Get the applicant's details
+    applicant_name <- input$name
+    applicant_phone <- input$number
+    showing_date <- input$showing_date
+    
+    # Send an email using Blastula
+    #Preparing to send mail,create envelope object: envelope command
+    email <- envelope()
+   # sendEmail <- function(recipient, subject, body) {
+      email <- email%>%
+        from("kevin.zolea@gmail.com")%>%
+        to("kevin.zolea@gmail.com")%>%
+        subject("New Showing Time Request!")%>%
+        text(paste0(
+          "Applicant Name: ", applicant_name, "\n",
+          "Applicant Phone: ", applicant_phone, "\n",
+          "Showing Time: ", showing_date, "\n"
+        ))
+      
+      smtp <- gmail(
+        username = "kevin.zolea@gmail.com",
+        password = Sys.getenv("GMAIL_PASSWORD")
+      )
+      
+      smtp(email, verbose = TRUE)
+      
+  })  
+
+
 }
 ###################################################################################
 shinyApp(ui, server)
-#
