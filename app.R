@@ -266,7 +266,7 @@ observeEvent(input$submit, {
       # If the user meets all criteria, show the success message
       showModal(
         modalDialog(
-          title = "Congratulations!",
+          title = paste("Congratulations", input$name,"!"),
           "You meet all our minimum criteria and are eligible for the rental property.",
           size = "l",
           footer = tagList(
@@ -303,12 +303,9 @@ observeEvent(input$submit, {
           inputId = "showing_date",
           label = "Please Choose a Showing Time:",
           timepicker = TRUE,
-          dateFormat = "dd-MM-yyyy"
-          
-          ),
-        timepickerOptions(
-          dateTimeSeparator = ""
-        )
+          dateFormat = "MM-dd-yyyy",
+          timepickerOpts = timepickerOptions(timeFormat = "h")
+          )
         )
     )
   })
@@ -341,9 +338,6 @@ observeEvent(input$submit, {
       name = input$name,
       email = input$email,
       number = input$number
-      
-      
-      
     )
     
     # Save the data frame to the Google Sheet
@@ -356,11 +350,13 @@ observeEvent(input$submit, {
     applicant_name <- input$name
     applicant_phone <- input$number
     showing_date <- input$showing_date
+    applicant_email<-input$email
     
-    # Send an email using Blastula
-    #Preparing to send mail,create envelope object: envelope command
+    # Format showing_date to non-military time format
+    formatted_date <- format(as.POSIXct(showing_date), "%m-%d-%Y %I:%M %p")
+    
+    # Send an email to myself with the showing time
     email <- envelope()
-   # sendEmail <- function(recipient, subject, body) {
       email <- email%>%
         from("kevin.zolea@gmail.com")%>%
         to("kevin.zolea@gmail.com")%>%
@@ -368,9 +364,12 @@ observeEvent(input$submit, {
         text(paste0(
           "Applicant Name: ", applicant_name, "\n",
           "Applicant Phone: ", applicant_phone, "\n",
-          "Showing Time: ", showing_date, "\n"
-        ))
-      
+          "Showing Time: ", formatted_date))%>%
+        render(
+          paste0("[Approve Showing](mailto:", applicant_email, "?subject=Showing%20Time%20Confirmation&body=Dear%20", 
+                 applicant_name, ",%0A%0AThank%20you%20for%20your%20interest!%0A%0AYour%20showing%20time%20is:%20", 
+                 URLencode(formatted_date), "%0A%0AWe%20look%20forward%20to%20meeting%20you!%0A%0ABest%20regards,%0AHinds%20Property%20Management)")
+        )
       smtp <- gmail(
         username = "kevin.zolea@gmail.com",
         password = Sys.getenv("GMAIL_PASSWORD")
