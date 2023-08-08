@@ -9,6 +9,7 @@ library(shinyWidgets)
 library(shinyjs)
 library(googlesheets4)
 library(emayili)
+library(DT)
 ##################################################################################
 readRenviron(".Renviron")
 
@@ -228,8 +229,9 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                                         value = ""))
                   )
                 ),
-                actionButton(inputId = "submit", label = "Submit", class = "btn-primary", 
-                             width = "100%"))
+                actionButton("review_info", "Review Information", class = "btn-primary", width = "100%"))
+      
+             
 
 ##################################################################################
 server <- function(input, output,session) {
@@ -245,10 +247,73 @@ server <- function(input, output,session) {
              logical(1))
     mandatoryFilled <- all(mandatoryFilled)
     
-    shinyjs::toggleState(id = "submit", condition = mandatoryFilled)
+    shinyjs::toggleState(id = "review_info", condition = mandatoryFilled)
   })    
 
 ####################################################################################  
+  # Observer for the "Review Information" button
+  observeEvent(input$review_info, {
+    showModal(
+      modalDialog(
+        title = "Review Information",
+        size = "l",
+        fluidRow(
+          DTOutput("review_table")  # Display the formatted user inputs
+        ),
+        footer = tagList(
+          actionButton(inputId = "submit", label = "Submit", class = "btn-primary", 
+                       width = "100%"))
+      )
+    )
+  })
+  
+  # Observer to render the user's inputs for review
+  output$review_table <- renderUI({
+    user_input <- data.frame(
+      "Question" = c(
+        "Will you answer these questions truthfully?",
+        "Do you have a steady source of income?",
+        "Is your monthly gross income 3 times the rent?",
+        "What is your credit score?",
+        "Are you comfortable completing a background check?",
+        "Have you ever been evicted or been given an eviction notice?",
+        "Are you comfortable with us obtaining references from your past landlords?",
+        "Will you receive great references from your past landlords?",
+        "Number of people in household",
+        "Does anyone in your household have any pets?",
+        "Does anyone in your household smoke?",
+        "If you are approved, when will you have the first months rent and deposit available?",
+        "Your name",
+        "Your email",
+        "Your phone number"
+      ),
+      "Answer" = c(
+        input$honesty,
+        input$income,
+        input$income_amt,
+        input$credit_score,
+        input$background_check,
+        input$evicted,
+        input$past_landlords,
+        input$great_ref,
+        input$num_people,
+        input$pets,
+        input$smoke,
+        input$move_in_date,
+        input$name,
+        input$email,
+        input$number
+      )
+    )
+    
+    datatable(
+      user_input,
+      rownames = FALSE,
+      options = list(dom = 't', paging = FALSE, ordering = FALSE)
+    )
+    
+  })
+  
   # observeEvent is a reactive function that will run when the submit button is clicked
 observeEvent(input$submit, {
     # Check if user meets all criteria
@@ -303,8 +368,7 @@ observeEvent(input$submit, {
           inputId = "showing_date",
           label = "Please Choose a Showing Time:",
           timepicker = TRUE,
-          dateFormat = "MM-dd-yyyy",
-          timepickerOpts = timepickerOptions(timeFormat = "h")
+          dateFormat = "MM-dd-yyyy"
           )
         )
     )
