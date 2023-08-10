@@ -12,14 +12,13 @@ library(emayili)
 library(DT)
 ##################################################################################
 readRenviron(".Renviron")
-
+##################################################################################
 # Authorize the Google Sheets API
 gs4_auth(email = "kevin.zolea@gmail.com", cache = ".secrets")
-
+##################################################################################
 # Define the ID of the Google Sheet where you want to save the data
 google_sheet_id <- "1KTaRo3oUzuu1dPXc1rLjr1AHE_dKHdtQI7IqqmUMKdo"
-
-
+##################################################################################
 # Mandatory fields for inputs in application so users can't submit responses 
 # without answering all the questions
 fieldsMandatory <- c("honesty", "income","income_amt","credit_score","great_ref",
@@ -229,13 +228,9 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                                         value = ""))
                   )
                 ),
-                actionButton("review_info", "Review Information", class = "btn-primary", width = "100%"))
-      
-             
-
+                actionButton("review_info", "Submit", class = "btn-primary", width = "100%"))
 ##################################################################################
 server <- function(input, output,session) {
-  
   # Used to check and make sure all inputs are filled out before user can submit 
   # form through action button
   observe({
@@ -249,7 +244,6 @@ server <- function(input, output,session) {
     
     shinyjs::toggleState(id = "review_info", condition = mandatoryFilled)
   })    
-
 ####################################################################################  
   # Observer for the "Review Information" button
   observeEvent(input$review_info, {
@@ -258,6 +252,8 @@ server <- function(input, output,session) {
         title = "Review Information",
         size = "l",
         fluidRow(
+          "Please review the following information before submitting. If
+          everything looks good, please submit.",
           DTOutput("review_table")  # Display the formatted user inputs
         ),
         footer = tagList(
@@ -266,9 +262,9 @@ server <- function(input, output,session) {
       )
     )
   })
-  
+  ################################################################################## 
   # Observer to render the user's inputs for review
-  output$review_table <- renderUI({
+  output$review_table <- renderDT({
     user_input <- data.frame(
       "Question" = c(
         "Will you answer these questions truthfully?",
@@ -299,7 +295,7 @@ server <- function(input, output,session) {
         input$num_people,
         input$pets,
         input$smoke,
-        input$move_in_date,
+        format(input$move_in_date, "%Y-%m-%d"),  # Format the date
         input$name,
         input$email,
         input$number
@@ -313,7 +309,7 @@ server <- function(input, output,session) {
     )
     
   })
-  
+  ##################################################################################  
   # observeEvent is a reactive function that will run when the submit button is clicked
 observeEvent(input$submit, {
     # Check if user meets all criteria
@@ -332,7 +328,8 @@ observeEvent(input$submit, {
       showModal(
         modalDialog(
           title = paste("Congratulations", input$name,"!"),
-          "You meet all our minimum criteria and are eligible for the rental property.",
+          "You meet all our minimum criteria and are eligible for the rental property. 
+          Please click the 'Schedule Showing' button below to schedule a showing.",
           size = "l",
           footer = tagList(
             actionButton("schedule_showing", "Schedule Showing", class = "btn-primary")
@@ -360,6 +357,8 @@ observeEvent(input$submit, {
     showModal(
       modalDialog(
         title = "Schedule Showing",
+        "Please choose a showing date/time from the calendar below. Once a date/time is selected
+        in the calendar, please hit the 'Submit' button below.",br(),br(),
         size = "l",
         footer = tagList(
           actionButton("submit2", "Submit")
