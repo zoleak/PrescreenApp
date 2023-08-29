@@ -1,4 +1,5 @@
 # Pre-Screening Application for Rental Property Management
+
 <img width="1433" alt="featured" src="https://github.com/zoleak/PrescreenApp/assets/36116239/e1ab38d4-f8c5-47b8-a766-02d195f03ddb">
 
 # Overview
