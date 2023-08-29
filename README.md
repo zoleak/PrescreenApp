@@ -1,6 +1,7 @@
 # Pre-Screening Application for Rental Property Management
 
-<img width="1433" alt="featured" src="https://github.com/zoleak/PrescreenApp/assets/36116239/e1ab38d4-f8c5-47b8-a766-02d195f03ddb">
+<img width="1433" alt="featured" src="https://github.com/zoleak/PrescreenApp/assets/36116239/52cee629-3438-4008-a62c-a23a1a5dfb3f">
+
 
 # Overview
 This R Shiny application streamlines the pre-screening process for my rental properties. Its core objective is to enable property managers to efficiently evaluate prospective tenants against essential rental prerequisites.
