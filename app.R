@@ -59,9 +59,9 @@ ui <- fluidPage(theme = shinytheme("flatly"),
     }
          ")
                 )),
-                titlePanel(div("Hinds Property Management",
-                           style='background-color:#4285F4;
-                           color:white;')),
+                #titlePanel(div("Hinds Property Management",
+                #           style='background-color:#4285F4;
+                #           color:white;')),
                 fluidRow(
                   tags$h1(class = "centered",HTML("<u>Questionnaire for Rental Property</u>")),
                   p(class = "centered","Thank you for your interest. Please fill out this form in
@@ -257,8 +257,8 @@ server <- function(input, output,session) {
           DTOutput("review_table")  # Display the formatted user inputs
         ),
         footer = tagList(
-          actionButton(inputId = "submit", label = "Submit", class = "btn-primary", 
-                       width = "100%"))
+          modalButton("Edit Information"),
+          actionButton(inputId = "submit", label = "Submit", class = "btn-primary"))
       )
     )
   })
@@ -407,41 +407,41 @@ observeEvent(input$submit, {
     sheet_append(data, ss = google_sheet_id, sheet = "Sheet1")
   })
   
-  # Send email to myself
-  observeEvent(input$submit2, {
-    # Get the applicant's details
-    applicant_name <- input$name
-    applicant_phone <- input$number
-    showing_date <- input$showing_date
-    applicant_email<-input$email
-    
-    # Format showing_date to non-military time format
-    formatted_date <- format(as.POSIXct(showing_date), "%m-%d-%Y %I:%M %p")
-    
-    # Send an email to myself with the showing time
-    email <- envelope()
-      email <- email%>%
-        from("kevin.zolea@gmail.com")%>%
-        to("kevin.zolea@gmail.com")%>%
-        subject("New Showing Time Request!")%>%
-        text(paste0(
-          "Applicant Name: ", applicant_name, "\n",
-          "Applicant Phone: ", applicant_phone, "\n",
-          "Showing Time: ", formatted_date))%>%
-        render(
-          paste0("[Approve Showing](mailto:", applicant_email, "?subject=Showing%20Time%20Confirmation&body=Dear%20", 
-                 applicant_name, ",%0A%0AThank%20you%20for%20your%20interest!%0A%0AYour%20showing%20time%20is:%20", 
-                 URLencode(formatted_date), "%0A%0AWe%20look%20forward%20to%20meeting%20you!%0A%0ABest%20regards,%0AHinds%20Property%20Management)")
-        )
-      smtp <- gmail(
-        username = "kevin.zolea@gmail.com",
-        password = Sys.getenv("GMAIL_PASSWORD")
-      )
-      
-      smtp(email, verbose = TRUE)
-      
-  })  
-
+#  # Send email to myself
+#  observeEvent(input$submit2, {
+#    # Get the applicant's details
+#    applicant_name <- input$name
+#    applicant_phone <- input$number
+#    showing_date <- input$showing_date
+#    applicant_email<-input$email
+#    
+#    # Format showing_date to non-military time format
+#    formatted_date <- format(as.POSIXct(showing_date), "%m-%d-%Y %I:%M %p")
+#    
+#    # Send an email to myself with the showing time
+#    email <- envelope()
+#      email <- email%>%
+#        from("kevin.zolea@gmail.com")%>%
+#        to("kevin.zolea@gmail.com")%>%
+#        subject("New Showing Time Request!")%>%
+#        text(paste0(
+#          "Applicant Name: ", applicant_name, "\n",
+#          "Applicant Phone: ", applicant_phone, "\n",
+#          "Showing Time: ", formatted_date))%>%
+#        render(
+#          paste0("[Approve Showing](mailto:", applicant_email, "?subject=Showing%20Time%20Confirmation&body=Dear%20", 
+#                 applicant_name, ",%0A%0AThank%20you%20for%20your%20interest!%0A%0AYour%20showing%20time%20is:%20", 
+#                 URLencode(formatted_date), "%0A%0AWe%20look%20forward%20to%20meeting%20you!%0A%0ABest%20regards,%0AHinds%20Property%20Management)")
+#        )
+#      smtp <- gmail(
+#        username = "kevin.zolea@gmail.com",
+#        password = Sys.getenv("GMAIL_PASSWORD")
+#      )
+#      
+#      smtp(email, verbose = TRUE)
+#      
+#  })  
+#
 
 }
 ###################################################################################

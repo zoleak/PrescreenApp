@@ -1,0 +1,12 @@
+name: PrescreenApp
+title: PrescreenApp
+username: zoleak
+account: zoleak
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 9706076
+bundleId: 7620844
+url: https://zoleak.shinyapps.io/PrescreenApp/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
