@@ -1,6 +1,6 @@
 # Shiny application created by Kevin Zolea
 # This application will be used to assist in the pre-screening efforts
-# for our  property management business
+# for our rental properties
 ##################################################################################
 # load necessary packages for application to run
 library(shiny)
@@ -11,28 +11,29 @@ library(googlesheets4)
 library(emayili)
 library(DT)
 ##################################################################################
+# Read environmental variables
 readRenviron(".Renviron")
 ##################################################################################
 # Authorize the Google Sheets API
 gs4_auth(email = "kevin.zolea@gmail.com", cache = ".secrets")
 ##################################################################################
-# Define the ID of the Google Sheet where you want to save the data
+# Define Google Sheet ID for data storage
 google_sheet_id <- "1KTaRo3oUzuu1dPXc1rLjr1AHE_dKHdtQI7IqqmUMKdo"
 ##################################################################################
-# Mandatory fields for inputs in application so users can't submit responses 
-# without answering all the questions
+# Mandatory fields for inputs in the application
+# Users can't submit responses without answering all the questions
 fieldsMandatory <- c("honesty", "income","income_amt","credit_score","great_ref",
                      "evicted","background_check","past_landlords","name","number",
                      "email","num_people","pets","smoke","move_in_date")
 ##################################################################################
-# function to create red asterick next to inputs
+# Function to create label with red asterisk for mandatory inputs
 labelMandatory <- function(label) {
   tagList(
     label,
     span("*", class = "mandatory_star")
   )
 }
-
+# CSS Styling
 appCSS <- ".mandatory_star { color: red; }
             .modal-content { text-align: center; }
            .modal-body { color: blue; }"
