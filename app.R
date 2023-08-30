@@ -33,36 +33,16 @@ labelMandatory <- function(label) {
     span("*", class = "mandatory_star")
   )
 }
-# CSS Styling
-appCSS <- ".mandatory_star { color: red; }
-            .modal-content { text-align: center; }
-           .modal-body { color: blue; }"
+# Function to create a list item with given text
+createListItem <- function(text) {
+  tags$li(text)
+}
 ##################################################################################
 ui <- fluidPage(theme = shinytheme("flatly"),
                 shinyjs::useShinyjs(),
-                shinyjs::inlineCSS(appCSS),
-                tags$head(tags$style(
-                  HTML("
-         .section-header {
-           background-color: #4285F4;
-           color: white;
-           padding: 10px;
-           font-weight: bold;
-         }
-         
-         .centered {
-           text-align: center;
-         }
-         
-          ul {
-      text-align: center;
-      list-style-position: inside;
-    }
-         ")
-                )),
-                #titlePanel(div("Hinds Property Management",
-                #           style='background-color:#4285F4;
-                #           color:white;')),
+                tags$head(
+                includeCSS("www/styles.css")
+                ),
                 fluidRow(
                   tags$h1(class = "centered",HTML("<u>Questionnaire for Rental Property</u>")),
                   p(class = "centered","Thank you for your interest. Please fill out this form in
@@ -71,139 +51,140 @@ ui <- fluidPage(theme = shinytheme("flatly"),
     If you have any questions, please don't hesitate to text me at 856-425-2091.", 
                     span("THIS IS NOT AN APPLICATION", style = "font-weight:bold; color:red;")
                   )),
+                fluidRow(
+                  tags$h1(class = "centered", HTML("<u>Minimum Criteria</u>")),
+                  tags$ul(
+                    createListItem("Applicant must have current photo identification and a valid social security number."),
+                    createListItem("Applicant's monthly household income must exceed three times the rent (gross). All income must be from a verifiable source. Unverifiable income will not be considered."),
+                    createListItem("Applicants must receive positive references from all previous landlords for the previous 5 years."),
+                    createListItem("Applicant may not have any evictions or unpaid judgments from previous landlords."),
+                    createListItem("Applicant must exhibit a responsible financial life. Credit score must be a minimum of 600."),
+                    createListItem("A background check will be conducted on all applicants over 18."),
+                    createListItem("Applicant must be a non-smoker."),
+                    createListItem("Occupancy is limited to 2 people per bedroom."),
+                    createListItem("No Pets")
+                  )
+                ),
+                tags$h3(class = "centered",HTML("<u>Please answer the following questions to the best of your ability.</u>")),
+                # Section 1
+                div(
+                  class = "section-header",
+                  "I agree to honestly answer this survey to the best of my abilities"
+                ),
+                div(
                   fluidRow(
-                    tags$h1(class = "centered",HTML("<u>Minimum Criteria</u>")),
-                    tags$ul(
-                      tags$li("Applicant must have current photo identification and a valid social security number."),
-                      tags$li("Applicant's monthly household income must exceed three times the rent (gross). 
-              All income must be from a verifiable source. Unverifiable income will not be considered."),
-                      tags$li("Applicants must receive positive references from all previous landlords for the previous 5 years."),
-                      tags$li("Applicant may not have any evictions or unpaid judgments from previous landlords."),
-                      tags$li("Applicant must exhibit a responsible financial life. Credit score must be a minimum of 600."),
-                      tags$li("A background check will be conducted on all applicants over 18."),
-                      tags$li("Applicant must be a non-smoker."),
-                      tags$li("Occupancy is limited to 2 people per bedroom."),
-                      tags$li("No Pets"))),
-                  tags$h3(class = "centered",HTML("<u>Please answer the following questions to the best of your ability.</u>")),
-                  # Section 1
-                  div(
-                    class = "section-header",
-                    "I agree to honestly answer this survey to the best of my abilities"
-                  ),
-                  div(
-                    fluidRow(
-                      #column(4, "Will you answer these questions truthfully"),
-                      column(8, radioButtons("honesty",labelMandatory("Will you answer these 
+                    #column(4, "Will you answer these questions truthfully"),
+                    column(8, radioButtons("honesty",labelMandatory("Will you answer these 
                                                                       questions truthfully"), 
-                                             c("Yes I will", "No I won't"),
-                                             selected = character(0)))
-                    )
-                  ),
-                  
-                  # Section 2
-                  div(
-                    class = "section-header",
-                    "Income/Credit"
-                  ),
-                  div(
-                    fluidRow(
-                      #column(4,"Do you have a steady source of income?"),
-                      column(8,radioButtons("income",labelMandatory("Do you have a 
+                                           c("Yes I will", "No I won't"),
+                                           selected = character(0)))
+                  )
+                ),
+                
+                # Section 2
+                div(
+                  class = "section-header",
+                  "Income/Credit"
+                ),
+                div(
+                  fluidRow(
+                    #column(4,"Do you have a steady source of income?"),
+                    column(8,radioButtons("income",labelMandatory("Do you have a 
                                                                     steady source of income?"), 
-                                            c("Yes I do", "No I don't"),
-                                            selected = character(0)))
-                    ),
-                    fluidRow(
-                      #column(4, "Is your monthly gross income at least $4,800"),
-                      column(8, radioButtons("income_amt", labelMandatory("Is your monthly
+                                          c("Yes I do", "No I don't"),
+                                          selected = character(0)))
+                  ),
+                  fluidRow(
+                    #column(4, "Is your monthly gross income at least $4,800"),
+                    column(8, radioButtons("income_amt", labelMandatory("Is your monthly
                                                                           gross income 3 times the rent?"), 
-                                             c("Yes it is", "No it's not"),
-                                             selected = character(0)))
-                    ),
-                    fluidRow(
-                      #column(4, "What is your credit score?"),
-                      column(8, radioButtons("credit_score", labelMandatory("What is your credit score?"),
-                                             c("Below 600", "Above 600"),
-                                             selected = character(0)))
-                    )
+                                           c("Yes it is", "No it's not"),
+                                           selected = character(0)))
                   ),
-                  
-                  # Section 3
-                  div(
-                    class = "section-header",
-                    "Background/Past"
-                  ),
-                  div(
-                    fluidRow(
-                      #column(4, "Are you comfortable completing a background check?"),
-                      column(8, radioButtons("background_check", 
-                      labelMandatory("Are you comfortable 
+                  fluidRow(
+                    #column(4, "What is your credit score?"),
+                    column(8, radioButtons("credit_score", labelMandatory("What is your credit score?"),
+                                           c("Below 600", "Above 600"),
+                                           selected = character(0)))
+                  )
+                ),
+                
+                # Section 3
+                div(
+                  class = "section-header",
+                  "Background/Past"
+                ),
+                div(
+                  fluidRow(
+                    #column(4, "Are you comfortable completing a background check?"),
+                    column(8, radioButtons("background_check", 
+                                           labelMandatory("Are you comfortable 
                                     completing a background check?"), 
-                                             c("Yes I am", "No I'm not"),
-                                             selected = character(0)))
-                    ),
-                    fluidRow(
-                      #column(4, "Have you ever been evicted or been given an eviction notice?"),
-                      column(8, radioButtons("evicted",
-                                             labelMandatory("Have you ever been 
+                                           c("Yes I am", "No I'm not"),
+                                           selected = character(0)))
+                  ),
+                  fluidRow(
+                    #column(4, "Have you ever been evicted or been given an eviction notice?"),
+                    column(8, radioButtons("evicted",
+                                           labelMandatory("Have you ever been 
                                                             evicted or been given 
                                                             an eviction notice?"), 
-                                             c("Yes I have", "No I haven't"),
-                                             selected = character(0)))
-                    ),
-                    fluidRow(
-                      #column(4, "Are you comfortable with us obtaining references from your past landlords?"),
-                      column(8, radioButtons("past_landlords",
-                                             labelMandatory("Are you comfortable with us 
+                                           c("Yes I have", "No I haven't"),
+                                           selected = character(0)))
+                  ),
+                  fluidRow(
+                    #column(4, "Are you comfortable with us obtaining references from your past landlords?"),
+                    column(8, radioButtons("past_landlords",
+                                           labelMandatory("Are you comfortable with us 
                                                             obtaining references from your 
                                                             past landlords?"), 
-                                             c("Yes I am", "No I'm not"),
-                                             selected = character(0)))
-                    ),
-                    fluidRow(
-                      #column(4, "Will you receive great references from your past landlords?"),
-                      column(8, radioButtons("great_ref",labelMandatory("Will you receive great 
+                                           c("Yes I am", "No I'm not"),
+                                           selected = character(0)))
+                  ),
+                  fluidRow(
+                    #column(4, "Will you receive great references from your past landlords?"),
+                    column(8, radioButtons("great_ref",labelMandatory("Will you receive great 
                                                                         references from your past landlords?"), 
-                                             c("Yes I will", "No I won't"),
-                                             selected = character(0)))
-                    )
+                                           c("Yes I will", "No I won't"),
+                                           selected = character(0)))
+                  )
+                ),
+                
+                # Section 4
+                div(
+                  class = "section-header",
+                  "General"
+                ),
+                div(
+                  fluidRow(
+                    #column(4, "Number of people in household"),
+                    column(8, numericInput("num_people",
+                                           labelMandatory("Number of people in household")
+                                           ,0,min = 0, step = 1))
                   ),
-                  
-                  # Section 4
-                  div(
-                    class = "section-header",
-                    "General"
-                  ),
-                  div(
-                    fluidRow(
-                      #column(4, "Number of people in household"),
-                      column(8, numericInput("num_people",
-                                             labelMandatory("Number of people in household")
-                                             ,0,min = 0, step = 1))
-                    ),
-                    fluidRow(
-                      #column(4, "Does anyone in your household have any pets?"),
-                      column(8, radioButtons("pets", 
-                                             labelMandatory("Does anyone in your
+                  fluidRow(
+                    #column(4, "Does anyone in your household have any pets?"),
+                    column(8, radioButtons("pets", 
+                                           labelMandatory("Does anyone in your
                                                             household have any pets?"),c("Yes", "No"),
-                                             selected = character(0)))
-                    ),
-                    fluidRow(
-                      #column(4, "Does anyone in your household smoke?"),
-                      column(8, radioButtons("smoke",labelMandatory("Does anyone in your household
+                                           selected = character(0)))
+                  ),
+                  fluidRow(
+                    #column(4, "Does anyone in your household smoke?"),
+                    column(8, radioButtons("smoke",labelMandatory("Does anyone in your household
                                                                     smoke?")
-                                             ,c("Yes", "No"),
-                                             selected = character(0)))
-                    ),
-                    fluidRow(
-                      #column(4, "If you are approved, when will you have the first months rent and deposit available?"),
-                      column(8, dateInput("move_in_date",
-                                          labelMandatory("If you are approved, 
+                                           ,c("Yes", "No"),
+                                           selected = character(0)))
+                  ),
+                  fluidRow(
+                    #column(4, "If you are approved, when will you have the first months rent and deposit available?"),
+                    column(8, dateInput("move_in_date",
+                                        labelMandatory("If you are approved, 
                                                          when will you have the first months rent and deposit available?"),
-                                          #,
-                                          #placeholder = "Enter date",
-                                         # value = ""
-                                          )))),
+                                        #,
+                                        #placeholder = "Enter date",
+                                        # value = ""
+                    )))),
                 # Section 4
                 div(
                   class = "section-header",
@@ -245,7 +226,7 @@ server <- function(input, output,session) {
     
     shinyjs::toggleState(id = "review_info", condition = mandatoryFilled)
   })    
-####################################################################################  
+  ####################################################################################  
   # Observer for the "Review Information" button
   observeEvent(input$review_info, {
     showModal(
@@ -312,7 +293,7 @@ server <- function(input, output,session) {
   })
   ##################################################################################  
   # observeEvent is a reactive function that will run when the submit button is clicked
-observeEvent(input$submit, {
+  observeEvent(input$submit, {
     # Check if user meets all criteria
     # if all the criteria are met, then the user will be shown a success message
     if (input$honesty == "Yes I will" &&
@@ -336,23 +317,23 @@ observeEvent(input$submit, {
             actionButton("schedule_showing", "Schedule Showing", class = "btn-primary")
           )
         ))
-    # If the criteria are not met, then the user will be shown an error message
+      # If the criteria are not met, then the user will be shown an error message
     } else {
       # If user does not meet all criteria, show error message
       showModal(
-      modalDialog(
-        title = "Criteria Not Met",
-        "Unfortunately, we regret to inform you that at this time, 
+        modalDialog(
+          title = "Criteria Not Met",
+          "Unfortunately, we regret to inform you that at this time, 
         you do not meet the rental criteria for this property. Thank you for
         your time.",
-        size = "l",
-        icon = icon("exclamation-triangle")
-      ))
+          size = "l",
+          icon = icon("exclamation-triangle")
+        ))
     }
   })
   
-
-
+  
+  
   # Handle the scheduling of showing when the "Schedule Showing" button is clicked
   observeEvent(input$schedule_showing, {
     showModal(
@@ -369,8 +350,8 @@ observeEvent(input$submit, {
           label = "Please Choose a Showing Time:",
           timepicker = TRUE,
           dateFormat = "MM-dd-yyyy"
-          )
         )
+      )
     )
   })
   
@@ -408,42 +389,42 @@ observeEvent(input$submit, {
     sheet_append(data, ss = google_sheet_id, sheet = "Sheet1")
   })
   
-#  # Send email to myself
-#  observeEvent(input$submit2, {
-#    # Get the applicant's details
-#    applicant_name <- input$name
-#    applicant_phone <- input$number
-#    showing_date <- input$showing_date
-#    applicant_email<-input$email
-#    
-#    # Format showing_date to non-military time format
-#    formatted_date <- format(as.POSIXct(showing_date), "%m-%d-%Y %I:%M %p")
-#    
-#    # Send an email to myself with the showing time
-#    email <- envelope()
-#      email <- email%>%
-#        from("kevin.zolea@gmail.com")%>%
-#        to("kevin.zolea@gmail.com")%>%
-#        subject("New Showing Time Request!")%>%
-#        text(paste0(
-#          "Applicant Name: ", applicant_name, "\n",
-#          "Applicant Phone: ", applicant_phone, "\n",
-#          "Showing Time: ", formatted_date))%>%
-#        render(
-#          paste0("[Approve Showing](mailto:", applicant_email, "?subject=Showing%20Time%20Confirmation&body=Dear%20", 
-#                 applicant_name, ",%0A%0AThank%20you%20for%20your%20interest!%0A%0AYour%20showing%20time%20is:%20", 
-#                 URLencode(formatted_date), "%0A%0AWe%20look%20forward%20to%20meeting%20you!%0A%0ABest%20regards,%0AHinds%20Property%20Management)")
-#        )
-#      smtp <- gmail(
-#        username = "kevin.zolea@gmail.com",
-#        password = Sys.getenv("GMAIL_PASSWORD")
-#      )
-#      
-#      smtp(email, verbose = TRUE)
-#      
-#  })  
-#
-
+  #  # Send email to myself
+  #  observeEvent(input$submit2, {
+  #    # Get the applicant's details
+  #    applicant_name <- input$name
+  #    applicant_phone <- input$number
+  #    showing_date <- input$showing_date
+  #    applicant_email<-input$email
+  #    
+  #    # Format showing_date to non-military time format
+  #    formatted_date <- format(as.POSIXct(showing_date), "%m-%d-%Y %I:%M %p")
+  #    
+  #    # Send an email to myself with the showing time
+  #    email <- envelope()
+  #      email <- email%>%
+  #        from("kevin.zolea@gmail.com")%>%
+  #        to("kevin.zolea@gmail.com")%>%
+  #        subject("New Showing Time Request!")%>%
+  #        text(paste0(
+  #          "Applicant Name: ", applicant_name, "\n",
+  #          "Applicant Phone: ", applicant_phone, "\n",
+  #          "Showing Time: ", formatted_date))%>%
+  #        render(
+  #          paste0("[Approve Showing](mailto:", applicant_email, "?subject=Showing%20Time%20Confirmation&body=Dear%20", 
+  #                 applicant_name, ",%0A%0AThank%20you%20for%20your%20interest!%0A%0AYour%20showing%20time%20is:%20", 
+  #                 URLencode(formatted_date), "%0A%0AWe%20look%20forward%20to%20meeting%20you!%0A%0ABest%20regards,%0AHinds%20Property%20Management)")
+  #        )
+  #      smtp <- gmail(
+  #        username = "kevin.zolea@gmail.com",
+  #        password = Sys.getenv("GMAIL_PASSWORD")
+  #      )
+  #      
+  #      smtp(email, verbose = TRUE)
+  #      
+  #  })  
+  #
+  
 }
 ###################################################################################
 shinyApp(ui, server)
