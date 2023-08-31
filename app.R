@@ -311,10 +311,11 @@ server <- function(input, output,session) {
         modalDialog(
           title = paste("Congratulations", input$name,"!"),
           "You meet all our minimum criteria and are eligible for the rental property. 
-          Please click the 'Schedule Showing' button below to schedule a showing.",
+          Please schedule your showing time below!",
           size = "l",
           footer = tagList(
-            actionButton("schedule_showing", "Schedule Showing", class = "btn-primary")
+            htmlOutput("calendlyFrame")
+            
           )
         ))
       # If the criteria are not met, then the user will be shown an error message
@@ -332,38 +333,11 @@ server <- function(input, output,session) {
     }
   })
   
-  
-  
-  # Handle the scheduling of showing when the "Schedule Showing" button is clicked
-  observeEvent(input$schedule_showing, {
-    showModal(
-      modalDialog(
-        title = "Schedule Showing",
-        "Please choose a showing date/time from the calendar below. Once a date/time is selected
-        in the calendar, please hit the 'Submit' button below.",br(),br(),
-        size = "l",
-        footer = tagList(
-          actionButton("submit2", "Submit")
-        ),
-        airDatepickerInput(
-          inputId = "showing_date",
-          label = "Please Choose a Showing Time:",
-          timepicker = TRUE,
-          dateFormat = "MM-dd-yyyy"
-        )
-      )
-    )
+  # Allows user to schedule showing time
+  output$calendlyFrame <- renderUI({
+    HTML('<iframe src="https://calendly.com/kevin-zolea/30min" width="100%" height="600" frameborder="0"></iframe>')
   })
-  
-  observeEvent(input$submit2, {
-    showModal(
-      modalDialog(
-        "Thank you. We will reach out to you shortly!",
-        footer = NULL
-      )
-    )
-  })
-  
+
   # Save user's input to Google Sheet when the submit button is clicked
   observeEvent(input$submit, {
     # Create a data frame with the user's input
@@ -389,41 +363,6 @@ server <- function(input, output,session) {
     sheet_append(data, ss = google_sheet_id, sheet = "Sheet1")
   })
   
-  #  # Send email to myself
-  #  observeEvent(input$submit2, {
-  #    # Get the applicant's details
-  #    applicant_name <- input$name
-  #    applicant_phone <- input$number
-  #    showing_date <- input$showing_date
-  #    applicant_email<-input$email
-  #    
-  #    # Format showing_date to non-military time format
-  #    formatted_date <- format(as.POSIXct(showing_date), "%m-%d-%Y %I:%M %p")
-  #    
-  #    # Send an email to myself with the showing time
-  #    email <- envelope()
-  #      email <- email%>%
-  #        from("kevin.zolea@gmail.com")%>%
-  #        to("kevin.zolea@gmail.com")%>%
-  #        subject("New Showing Time Request!")%>%
-  #        text(paste0(
-  #          "Applicant Name: ", applicant_name, "\n",
-  #          "Applicant Phone: ", applicant_phone, "\n",
-  #          "Showing Time: ", formatted_date))%>%
-  #        render(
-  #          paste0("[Approve Showing](mailto:", applicant_email, "?subject=Showing%20Time%20Confirmation&body=Dear%20", 
-  #                 applicant_name, ",%0A%0AThank%20you%20for%20your%20interest!%0A%0AYour%20showing%20time%20is:%20", 
-  #                 URLencode(formatted_date), "%0A%0AWe%20look%20forward%20to%20meeting%20you!%0A%0ABest%20regards,%0AHinds%20Property%20Management)")
-  #        )
-  #      smtp <- gmail(
-  #        username = "kevin.zolea@gmail.com",
-  #        password = Sys.getenv("GMAIL_PASSWORD")
-  #      )
-  #      
-  #      smtp(email, verbose = TRUE)
-  #      
-  #  })  
-  #
   
 }
 ###################################################################################
