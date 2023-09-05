@@ -8,7 +8,6 @@ library(shinythemes)
 library(shinyWidgets)
 library(shinyjs)
 library(googlesheets4)
-library(emayili)
 library(DT)
 ##################################################################################
 # Read environmental variables
@@ -33,10 +32,6 @@ labelMandatory <- function(label) {
     span("*", class = "mandatory_star")
   )
 }
-# Function to create a list item with given text
-createListItem <- function(text) {
-  tags$li(text)
-}
 ##################################################################################
 ui <- fluidPage(theme = shinytheme("flatly"),
                 shinyjs::useShinyjs(),
@@ -51,20 +46,10 @@ ui <- fluidPage(theme = shinytheme("flatly"),
     If you have any questions, please don't hesitate to text me at 856-425-2091.", 
                     span("THIS IS NOT AN APPLICATION", style = "font-weight:bold; color:red;")
                   )),
+                tags$h1(class = "centered", HTML("<u>Minimum Criteria</u>")),
                 fluidRow(
-                  tags$h1(class = "centered", HTML("<u>Minimum Criteria</u>")),
-                  tags$ul(
-                    createListItem("Applicant must have current photo identification and a valid social security number."),
-                    createListItem("Applicant's monthly household income must exceed three times the rent (gross). All income must be from a verifiable source. Unverifiable income will not be considered."),
-                    createListItem("Applicants must receive positive references from all previous landlords for the previous 5 years."),
-                    createListItem("Applicant may not have any evictions or unpaid judgments from previous landlords."),
-                    createListItem("Applicant must exhibit a responsible financial life. Credit score must be a minimum of 600."),
-                    createListItem("A background check will be conducted on all applicants over 18."),
-                    createListItem("Applicant must be a non-smoker."),
-                    createListItem("Occupancy is limited to 2 people per bedroom."),
-                    createListItem("No Pets")
-                  )
-                ),
+                  column(width = 12, align = "center", tableOutput("criteria"))
+                ),                
                 tags$h3(class = "centered",HTML("<u>Please answer the following questions to the best of your ability.</u>")),
                 # Section 1
                 div(
@@ -213,6 +198,24 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                 actionButton("review_info", "Submit", class = "btn-primary", width = "100%"))
 ##################################################################################
 server <- function(input, output,session) {
+  
+  output$criteria <- renderTable({
+    criteria <- c(
+      "Applicant must have current photo identification and a valid social security number.",
+      "Applicant's monthly household income must exceed three times the rent (gross). All income must be from a verifiable source. Unverifiable income will not be considered.",
+      "Applicants must receive positive references from all previous landlords for the previous 5 years.",
+      "Applicant may not have any evictions or unpaid judgments from previous landlords.",
+      "Applicant must exhibit a responsible financial life. Credit score must be a minimum of 600.",
+      "A background check will be conducted on all applicants over 18.",
+      "Applicant must be a non-smoker.",
+      "Occupancy is limited to 2 people per bedroom",
+      "No pets"
+    )
+    
+    # Create a data frame with just one column
+    data.frame(Criteria = criteria)
+  }, header = FALSE)  # Set header to FALSE to remove the column name
+  
   # Used to check and make sure all inputs are filled out before user can submit 
   # form through action button
   observe({
