@@ -1,35 +1,54 @@
 /* styles.css */
-
-/* Styling for the section header */
-.section-header {
-  background-color: #4285F4;
-  color: white;
-  padding: 10px;
-  font-weight: bold;
-}
+  
+  /* Styling for the section header */
+  .section-header {
+    background-color: #4285F4;
+      color: white;
+    padding: 10px;
+    font-weight: bold;
+  }
 
 /* Centered text alignment */
-.centered {
-  text-align: center;
-}
+  .centered {
+    text-align: center;
+
+
+  }
 
 /* Centered text alignment for unordered lists */
-ul {
-  text-align: center;
-  list-style-position: inside;
-}
+  ul {
+    text-align: center;
+    list-style-position: inside;
+  }
 
 /* Red asterisk for mandatory fields */
-.mandatory_star {
-  color: red;
-}
+  .mandatory_star {
+    color: red;
+  }
 
 /* Styling for modal content */
-.modal-content {
-  text-align: center;
-}
+  .modal-content {
+    text-align: center;
+  }
 
 /* Styling for modal body */
-.modal-body {
-  color: blue;
-}
+  .modal-body {
+    color: blue;
+  }
+ .centered-content {
+                        text-align: center;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                      }
+                      
+  td {
+  text-align: center;
+}                    
+ 
+ 
+ th{
+     text-align: center;
+
+ }
+ 
