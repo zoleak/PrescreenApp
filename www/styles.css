@@ -52,3 +52,13 @@
 
  }
  
+ #criteria {
+    font-weight: bold;
+    color: black;
+    width: 750px;
+  margin: 0 auto;
+  text-align: left;
+  line-height: 3; /* Adjust this value for the desired line spacing */
+  
+ }
+

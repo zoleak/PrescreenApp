@@ -48,9 +48,9 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                   )),
                 tags$h1(class = "centered", HTML("<u>Minimum Criteria</u>")),
                 fluidRow(
-                  column(width = 12, align = "center", tableOutput("criteria"))
+                  column(width = 12, align = "center", verbatimTextOutput("criteria"))
                 ),                
-                tags$h3(class = "centered",HTML("<u>Please answer the following questions to the best of your ability.</u>")),
+                tags$h2(class = "centered",HTML("<u>Please answer the following questions to the best of your ability.</u>")),
                 # Section 1
                 div(
                   class = "section-header",
@@ -199,7 +199,7 @@ ui <- fluidPage(theme = shinytheme("flatly"),
 ##################################################################################
 server <- function(input, output,session) {
   
-  output$criteria <- renderTable({
+  output$criteria <- renderText({
     criteria <- c(
       "Applicant must have current photo identification and a valid social security number.",
       "Applicant's monthly household income must exceed three times the rent (gross). All income must be from a verifiable source. Unverifiable income will not be considered.",
@@ -208,13 +208,16 @@ server <- function(input, output,session) {
       "Applicant must exhibit a responsible financial life. Credit score must be a minimum of 600.",
       "A background check will be conducted on all applicants over 18.",
       "Applicant must be a non-smoker.",
-      "Occupancy is limited to 2 people per bedroom",
-      "No pets"
+      "Occupancy is limited to 2 people per bedroom.",
+      "No pets."
     )
     
-    # Create a data frame with just one column
-    data.frame(Criteria = criteria)
-  }, header = FALSE)  # Set header to FALSE to remove the column name
+    # Join the criteria with line breaks
+    criteria_text <- paste(criteria, collapse = "\n")  # Use "\n" for line breaks
+    
+    # Return the concatenated criteria as a single character string
+    criteria_text
+  })  
   
   # Used to check and make sure all inputs are filled out before user can submit 
   # form through action button
