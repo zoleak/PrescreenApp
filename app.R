@@ -7,6 +7,7 @@ library(shiny)
 library(shinythemes)
 library(shinyWidgets)
 library(shinyjs)
+library(shinycssloaders)
 library(googlesheets4)
 library(DT)
 ##################################################################################
@@ -36,8 +37,7 @@ labelMandatory <- function(label) {
 ui <- fluidPage(theme = shinytheme("flatly"),
                 shinyjs::useShinyjs(),
                 tags$head(
-                includeCSS("www/styles.css")
-                ),
+                includeCSS("www/styles.css")),
                 fluidRow(
                   tags$h1(class = "centered",HTML("<u>Questionnaire for Rental Property</u>")),
                   p(class = "centered","Thank you for your interest. Please fill out this form in
@@ -320,7 +320,7 @@ server <- function(input, output,session) {
           Please schedule your showing time below!",
           size = "l",
           footer = tagList(
-            htmlOutput("calendlyFrame")
+            shinycssloaders::withSpinner(htmlOutput("calendlyFrame"))
             
           )
         ))
@@ -341,7 +341,7 @@ server <- function(input, output,session) {
   
   # Allows user to schedule showing time
   output$calendlyFrame <- renderUI({
-    HTML('<iframe src="https://calendly.com/kevin-zolea/30min" width="100%" height="600" frameborder="0"></iframe>')
+    HTML('<iframe src="https://calendly.com/kevin-zolea/apartment-showing" width="100%" height="600" frameborder="0"></iframe>')
   })
 
   # Save user's input to Google Sheet when the submit button is clicked
