@@ -1,6 +1,6 @@
 # Pre-Screening Application for Rental Property Management
 
-<img width="1433" alt="featured" src="https://github.com/zoleak/PrescreenApp/assets/36116239/5716aad1-f84f-4073-8dd4-03d6520d4adf">
+<img width="1427" alt="Screenshot 2024-03-12 at 9 26 52 PM" src="https://github.com/zoleak/PrescreenApp/assets/36116239/38beba60-2c5b-4015-9b7e-6abbc00ab655">
 
 
 # Overview
