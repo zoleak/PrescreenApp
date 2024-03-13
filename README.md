@@ -14,4 +14,4 @@ In summary, this application equips property managers with informed tenant asses
 
 # How to Use
 
-To see the R shiny application, simply click the following [link](https://zoleak.shinyapps.io/PrescreenApp/)
+To see the R shiny application, simply click the following [link](https://zoleak.shinyapps.io/PreScreenApp/)
