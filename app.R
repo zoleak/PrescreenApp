@@ -69,23 +69,25 @@ ui <- grid_page(
           height = 50, width = 50, align = "right")
     ),
     card_body(
+      fillable_mobile = TRUE,
+      min_height = 500,
       tags$u(tags$b("Minimum Criteria
                   ")),
       markdown(
         mds = c(
-          "1.) Applicant must have current photo identification and a valid social security number.",
+          "1.) Applicant(s) must have current photo identification and a valid social security number.",
           "",
           "2.) Applicant's monthly household income must exceed three times the rent (gross). All income must be from a verifiable source. Unverifiable income will not be considered.",
           "",
-          "3.) Applicants must receive positive references from all previous landlords for the previous 5 years.",
+          "3.) All applicants must receive positive references from all previous landlords for the previous 5 years.",
           "",
-          "4.) Applicant may not have any evictions or unpaid judgments from previous landlords.",
+          "4.) No applicant may have any evictions or unpaid judgments from previous landlords.",
           "",
-          "5.) Applicant must exhibit a responsible financial life. Credit score must be a minimum of 600.",
+          "5.) Each applicant must exhibit a responsible financial life. Credit score must be a minimum of 600.",
           "",
           "6.) A background check will be conducted on all applicants over 18.",
           "",
-          "7.) Applicant must be a non-smoker.",
+          "7.) All applicants must be a non-smoker.",
           "",
           "8.) Occupancy is limited to 2 people per bedroom.",
           "",
@@ -216,6 +218,8 @@ ui <- grid_page(
           "No"
         )
       ),
+      textInput("move_reason",
+                labelMandatory("Why are you moving?")),
       dateInput("move_in_date",
                       labelMandatory("If you are approved, 
                                       when will you have the first months rent and deposit available?")),
@@ -298,6 +302,7 @@ ui <- grid_page(
           "Number of people in household",
           "Does anyone in your household have any pets?",
           "Does anyone in your household smoke?",
+          "Why are you moving?",
           "If you are approved, when will you have the first months rent and deposit available?",
           "Your name",
           "Your email",
@@ -315,6 +320,7 @@ ui <- grid_page(
           input$num_people,
           input$pets,
           input$smoke,
+          input$move_reason,
           format(input$move_in_date, "%Y-%m-%d"),  # Format the date
           input$name,
           input$email,
@@ -391,6 +397,7 @@ ui <- grid_page(
         num_people = input$num_people,
         pets = input$pets,
         smoke = input$smoke,
+        reason = input$move_reason,
         move_in_date = input$move_in_date,
         name = input$name,
         email = input$email,
