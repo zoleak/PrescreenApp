@@ -373,9 +373,12 @@ ui <- grid_page(
         showModal(
           modalDialog(
             title = "Criteria Not Met",
-            "Unfortunately, we regret to inform you that at this time, 
-        you do not meet the rental criteria for this property. Thank you for
-        your time.",
+            p("Unfortunately, we regret to inform you that at this time, 
+        you do not meet the rental criteria for this property."),
+            p("While we encourage you to apply if you feel there may have been a mistake in the screening process, 
+       the application fee is non-refundable."),
+            p("We wish you the best of luck in finding your perfect place! Thank you for
+    your time."),
             size = "l",
             icon = icon("exclamation-triangle")
           ))
